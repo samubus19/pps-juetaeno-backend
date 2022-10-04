@@ -33,12 +33,12 @@ async function crearNuevoUsuario(req, res) {
             throw new Error("Este usuario ya existe");
     
         } else {
-            nuevoUsuario.contrasenia = await nuevoUsuario.encryptPassword(contrasenia);
+            nuevoUsuario.contrasenia = await nuevoUsuario.encryptPassword(bodyData.contrasenia);
             await nuevoUsuario.save();
             return res.status(201).json("Usuario creado correctamente");
         }
     } catch (error) {
-        res.json(error);
+        res.status(500).json(error.message);
     }
     
 }
