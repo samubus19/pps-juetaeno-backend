@@ -5,9 +5,6 @@ const morgan         = require('morgan');
 const app            = express();
 const path           = require('path');
 
-//Settings 
-// app.set('port', process.env.PORT || 4000);
-
 //Middlewares
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended : false}));
@@ -15,7 +12,8 @@ app.use(express.json());
 
 //routes
 app.use(require('./src/routes/usuario.routes'));
-app.use(require('./src/routes/expediente.routes'));
+app.use(require('./src/routes/documento.routes'));
+app.use(require('./src/routes/persona.routes'));
 
 //Static files
 app.use(express.static(path.join(__dirname, 'public')));

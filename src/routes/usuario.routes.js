@@ -14,7 +14,7 @@ router.post('/users', crearNuevoUsuario);
 //iniciar sesion de usuario
 router.post('/users/login', inciarSesionUsuario);
 //actualizar contraseña de usuario
-router.put('/users', actualizarContraseniaUsuario);
+router.put('/users/:id_usuario', actualizarContraseniaUsuario);
 
 
 module.exports = router;
