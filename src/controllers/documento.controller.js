@@ -1,88 +1,121 @@
 const Documento           = require('../database/models/Documento');
 const Joi                 = require('joi');
-const { documentoSchema } = require('./schemas/documentoSchema');
+const { DocumentoSchema } = require('./schemas/documentoSchema');
 
 async function crearNuevoDocumento(req, res) {
     const bodyData = {
-        nroExpediente : req.body.nroExpediente,
+        nroDocumento  : req.body.nroDocumento,
         tipoDocumento : req.body.tipoDocumento,
-        fechaIngreso  : req.body.fechaIngreso,
-        fechaSalida   : req.body.fechaSalida,
-        estadoActual  : "Iniciado",
         descripcion   : req.body.descripcion,
-        sedeActual    : "Mesa de entrada",
+        destino       : req.body.destino
     }
 
     try {
-        Joi.assert(bodyData, documentoSchema)
+        Joi.assert(bodyData, DocumentoSchema)
+
+        const documento = await Documento.findOne({nroDocumento : bodyData.nroDocumento});
+        if(documento) {
+            return res.status(400).json({
+                statusCode : 400,
+                mensaje    : `Ya existe un documento con el número ${bodyData.nroDocumento}`
+            });
+        }
+
         const nuevoDocumento = new Documento({
-            nroExpediente : bodyData.nroExpediente,
+            nroDocumento  : bodyData.nroDocumento,
             tipoDocumento : bodyData.tipoDocumento,
-            fechaIngreso  : bodyData.fechaIngreso,
-            fechaSalida   : bodyData.fechaSalida,
-            estadoActual  : bodyData.estadoActual,
-            descripcion   : bodyData.descripcion,
-            sedeActual    : bodyData.sedeActual,
+            historial     : [{
+                fechaIngreso  : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
+                fechaSalida   : "",
+                estado        : "Iniciado",
+                sede          : "Mesa de entrada",
+                descripcion   : bodyData.descripcion,
+                destino       : bodyData.destino
+            }]
         });
 
         await nuevoDocumento.save();
-        return res.status(201).json("Documento creado correctamente");   
+        return res.status(201).json({
+            mensaje : "Documento creado correctamente"
+        });   
     } catch (error) {
-        
+        return res.status(500).json({
+            mensaje : error
+        })
     }
 }
 
 async function editarDocumento(req, res) {
-    const { nro } = req.params;
+    const nroDocumento = req.params.nro;
     const bodyData = {
-        nroExpediente : req.body.nroExpediente,
+        nroDocumento  : req.body.nroDocumento,
         tipoDocumento : req.body.tipoDocumento,
-        fechaIngreso  : req.body.fechaIngreso,
-        fechaSalida   : req.body.fechaSalida,
-        estadoActual  : req.body.estadoActual,
         descripcion   : req.body.descripcion,
-        sedeActual    : req.body.sedeActual,
+        destino       : req.body.destino,
     }
+        
     try {
-        Joi.assert(bodyData, documentoSchema);
-        const documento = await Documento.findOneAndUpdate({nroExpediente : nro}, 
-            {
-                nroExpediente : bodyData.nroExpediente,
-                tipoDocumento : bodyData.tipoDocumento,
-                fechaIngreso  : bodyData.fechaIngreso,
-                fechaSalida   : bodyData.fechaSalida,
-                estadoActual  : bodyData.estadoActual, 
-                descripcion   : bodyData.descripcion,
-                sedeActual    : bodyData.sedeActual,
-            })
+        Joi.assert(bodyData, DocumentoSchema);
+        const documento = await Documento.findOne({nroDocumento : nroDocumento});
 
-            return res.status(200).json("Datos del documento editados correctamante");
+        if(documento) {
+            documento.nroDocumento             = bodyData.nroDocumento;
+            documento.tipoDocumento            = bodyData.tipoDocumento;
+            documento.historial[0].descripcion = bodyData.descripcion;
+            documento.historial[0].destino     = bodyData.destino;
+        }
+        await documento.save();
+        return res.status(200).json({
+            mensaje : "Documento editado correctamente"
+        });
 
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ mensaje : error });
+        return res.status(500).json({ 
+            mensaje : error
+        });
     } 
 } 
 
 async function actualizarEstadoDocumento(req, res) {
-    const { nro } = req.params;
+    const nroDocumento  = req.params.nro;
     const bodyData = {
         nuevoEstado : req.body.nuevoEstado,
         destino     : req.body.destino,
+        descripcion : req.body.descripcion,
     }
     try {
-        Joi.assert(bodyData, documentoSchema);
-        const documento = await Documento.findOneAndUpdate({nroExpediente : nro}, 
-            {
-                estadoActual  : bodyData.nuevoEstado, 
-                sedeActual    : bodyData.destino,
-            })
+        // Joi.assert(bodyData, documentoSchema);
+        const documento = await Documento.findOne({nroDocumento : nroDocumento})
+        if(documento) {
+            documento.historial.push({
+                    fechaIngreso  : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
+                    fechaSalida   : "",
+                    estado        : bodyData.nuevoEstado,
+                    descripcion   : bodyData.descripcion,
+                    sede          : bodyData.sede,
+                    destino       : bodyData.destino
+                })
+            
+            documento.historial[documento.historial.length-2].fechaSalida = documento.historial[documento.historial.length-1].fechaIngreso
+            documento.historial[documento.historial.length-1].sede        = documento.historial[documento.historial.length-2].destino
+            if(documento.historial[documento.historial.length-1].estado === "Finalizado") {
+                documento.historial[documento.historial.length-1].sede        = ""
+                documento.historial[documento.historial.length-1].destino     = ""
+                documento.historial[documento.historial.length-1].fechaSalida = new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'})
+            }
+            }
 
-            return res.status(200).json("Datos del documento editados correctamante");
+        await documento.save()
+
+        return res.status(200).json({
+            mensaje : "Estado del documento editado correctamante"
+        });
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ mensaje : error });
+        return res.status(500).json({ 
+            mensaje : error 
+        });
     } 
     /**
      * Se cambiaria el destino, estado, fecha de salida (se actualiza solo), 
@@ -91,9 +124,9 @@ async function actualizarEstadoDocumento(req, res) {
 }
 
 async function obtenerDocumentos(req, res) {
+
     try {
         const documentos = await Documento.find();
-        console.log(documentos);
         return res.status(200).json(documentos);
     } catch (error) {
         return res.status(500).json(error);
@@ -102,11 +135,18 @@ async function obtenerDocumentos(req, res) {
 
 async function obtenerDocumentoPorNumero(req, res) {
     try {
-        const documento = await Documento.findOne({nroExpediente : req.params.nro});
-        console.log(documento);
+        const documento = await Documento.findOne({nroDocumento : req.params.nro});
+        if(!documento) {
+            return res.status(400).json({
+                statusCode : 400,
+                mensaje    : `No se ha encontrado un documento con el número ${req.params.nro}. Revisa tus parámetros.`
+            })
+        }
         return res.status(200).json(documento);
     } catch (error) {
-        
+        return res.status(500).json({
+            mensaje : error
+        })
     }
 }
 

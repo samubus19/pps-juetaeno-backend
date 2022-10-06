@@ -18,34 +18,44 @@ async function crearNuevaPersona(req, res) {
         const nuevaPersona = new Persona({
             nombre          : bodyData.nombre,
             apellido        : bodyData.apellido,
-            tipoDocumento   : bodyData.tipo_documento,
-            nroDocumento    : bodyData.nro_documento,
-            fechaNacimiento : bodyData.fecha_nacimiento,
-            nroTelefono     : bodyData.nro_telefono
+            tipoDocumento   : bodyData.tipoDocumento,
+            nroDocumento    : bodyData.nroDocumento,
+            fechaNacimiento : bodyData.fechaNacimiento,
+            nroTelefono     : bodyData.nroTelefono
         });
     
-        const nroDocumento = await Persona.findOne({nro_documento : bodyData.nro_documento});
+        const nroDocumento = await Persona.findOne({nro_documento : bodyData.nroDocumento});
         if (nroDocumento) {
-            // return res.json("Ya existe este usuario");
-            throw new Error("Esta persona ya existe");
-    
+            return res.status(400).json({
+                statusCode : 400,
+                mensaje    : `Ya existe una persona con el número de documento ${bodyData.nroDocumento}.`
+            })
         } else {
-            // nuevoUsuario.contrasenia = await nuevoUsuario.encryptPassword(contrasenia);
             await nuevaPersona.save();
-            return res.status(201).json("Persona creada correctamente");
+            return res.status(201).json({
+                mensaje : "Persona creada correctamente"
+            });
         }
     } catch (error) {
-        res.status(500).json(error.message);
+        res.status(500).json(error);
     }
     
 }
 
 async function obtenerPersonaPorNroDocumento(req, res) {
    try {
-        const persona = await Persona.findOne({nro_documento : req.params.nro});
-        return res.status(200).json(persona);
+    console.log(req.params.nro)
+        const persona = await Persona.findOne({nroDocumento : req.params.nro});
+        if(!persona) {
+            return res.status(400).json({
+                statusCode : 400,
+                mensaje    : "Petición errónea, revisa tus parámetros."
+            })
+        }
+        return res.status(200).json({persona : persona});
+        
    } catch (error) {
-        return res.status(500).json(error);
+        return res.status(500).json(error.message);
    }
 }
 

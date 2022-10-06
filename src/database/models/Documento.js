@@ -2,13 +2,16 @@ const {Schema, model} = require("mongoose");
 // const bcrypt          = require("bcrypt");
 
 const DocumentoSchema = new Schema({
-    nroExpediente : String,
+    nroDocumento  : String,
     tipoDocumento : String,
-    fechaIngreso  : String,
-    fechaSalida   : String,
-    estadoActual  : String, 
-    descripcion   : String,
-    sedeActual    : String,
+    historial     : [{
+        fechaIngreso  : String,
+        fechaSalida   : String,
+        estado        : String,
+        descripcion   : String,
+        sede          : String,
+        destino       : String
+    }]
     }, {
     timestamps     : false
 });
