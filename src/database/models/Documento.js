@@ -4,13 +4,14 @@ const {Schema, model} = require("mongoose");
 const DocumentoSchema = new Schema({
     nroDocumento  : String,
     tipoDocumento : String,
+    descripcion   : String,
     historial     : [{
-        fechaIngreso  : String,
-        fechaSalida   : String,
-        estado        : String,
-        descripcion   : String,
-        sede          : String,
-        destino       : String
+        fechaIngreso      : String,
+        fechaSalida       : String,
+        estado            : String,
+        sede              : String,
+        destino           : String,
+        idUsuarioFirmante : String
     }]
     }, {
     timestamps     : false

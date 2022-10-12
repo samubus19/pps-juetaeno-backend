@@ -1,15 +1,23 @@
-const Documento           = require('../database/models/Documento');
-const Joi                 = require('joi');
-const { DocumentoSchema } = require('./schemas/documentoSchema');
+const Documento                                  = require('../database/models/Documento');
+const Joi                                        = require('joi');
+const { DocumentoSchema, 
+        editarDocumentoSchema, 
+        actualizarEstadoDocumentoSchema }        = require('./schemas/documentoSchema');
 
 async function crearNuevoDocumento(req, res) {
     const bodyData = {
-        nroDocumento  : req.body.nroDocumento,
-        tipoDocumento : req.body.tipoDocumento,
-        descripcion   : req.body.descripcion,
-        destino       : req.body.destino
+        nroDocumento      : req.body.nroDocumento,
+        tipoDocumento     : req.body.tipoDocumento,
+        descripcion       : req.body.descripcion,
+        fechaIngreso      : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
+        fechaSalida       : "",
+        estado            : "Iniciado",
+        sede              : "MesaEntrada",
+        destino           : req.body.destino,
+        idUsuarioFirmante : req.body.idUsuarioFirmante
     }
-
+    
+    console.log(bodyData.fechaIngreso);
     try {
         Joi.assert(bodyData, DocumentoSchema)
 
@@ -24,13 +32,14 @@ async function crearNuevoDocumento(req, res) {
         const nuevoDocumento = new Documento({
             nroDocumento  : bodyData.nroDocumento,
             tipoDocumento : bodyData.tipoDocumento,
+            descripcion   : bodyData.descripcion,
             historial     : [{
-                fechaIngreso  : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
-                fechaSalida   : "",
-                estado        : "Iniciado",
-                sede          : "Mesa de entrada",
-                descripcion   : bodyData.descripcion,
-                destino       : bodyData.destino
+                fechaIngreso      : bodyData.fechaIngreso,
+                fechaSalida       : bodyData.fechaSalida,
+                estado            : bodyData.estado,
+                sede              : bodyData.sede,
+                destino           : bodyData.destino,
+                idUsuarioFirmante : bodyData.idUsuarioFirmante
             }]
         });
 
@@ -55,14 +64,14 @@ async function editarDocumento(req, res) {
     }
         
     try {
-        Joi.assert(bodyData, DocumentoSchema);
+        Joi.assert(bodyData, editarDocumentoSchema);
         const documento = await Documento.findOne({nroDocumento : nroDocumento});
 
         if(documento) {
-            documento.nroDocumento             = bodyData.nroDocumento;
-            documento.tipoDocumento            = bodyData.tipoDocumento;
-            documento.historial[0].descripcion = bodyData.descripcion;
-            documento.historial[0].destino     = bodyData.destino;
+            documento.nroDocumento         = bodyData.nroDocumento;
+            documento.tipoDocumento        = bodyData.tipoDocumento;
+            documento.descripcion          = bodyData.descripcion;
+            documento.historial[0].destino = bodyData.destino;
         }
         await documento.save();
         return res.status(200).json({
@@ -79,20 +88,19 @@ async function editarDocumento(req, res) {
 async function actualizarEstadoDocumento(req, res) {
     const nroDocumento  = req.params.nro;
     const bodyData = {
-        nuevoEstado : req.body.nuevoEstado,
-        destino     : req.body.destino,
-        descripcion : req.body.descripcion,
+        nuevoEstado  : req.body.nuevoEstado,
+        destino      : req.body.destino,
+        fechaIngreso : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
+        fechaSalida  : ""
     }
     try {
-        // Joi.assert(bodyData, documentoSchema);
+        Joi.assert(bodyData, actualizarEstadoDocumentoSchema);
         const documento = await Documento.findOne({nroDocumento : nroDocumento})
         if(documento) {
             documento.historial.push({
-                    fechaIngreso  : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
-                    fechaSalida   : "",
+                    fechaIngreso  : bodyData.fechaIngreso,
+                    fechaSalida   : bodyData.fechaSalida,
                     estado        : bodyData.nuevoEstado,
-                    descripcion   : bodyData.descripcion,
-                    sede          : bodyData.sede,
                     destino       : bodyData.destino
                 })
             
