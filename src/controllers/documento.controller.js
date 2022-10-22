@@ -135,9 +135,12 @@ async function obtenerDocumentos(req, res) {
 
     try {
         const documentos = await Documento.find();
-        return res.status(200).json(documentos);
+        return res.status(200).json({
+            mensaje : documentos
+        });
     } catch (error) {
-        return res.status(500).json(error);
+        return res.status(500).json({
+            mensaje : error});
        }
 }
 
@@ -150,7 +153,9 @@ async function obtenerDocumentoPorNumero(req, res) {
                 mensaje    : `No se ha encontrado un documento con el número ${req.params.nro}. Revisa tus parámetros.`
             })
         }
-        return res.status(200).json(documento);
+        return res.status(200).json({
+            mensaje : documento
+        });
     } catch (error) {
         return res.status(500).json({
             mensaje : error

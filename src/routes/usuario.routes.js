@@ -1,20 +1,19 @@
-const { Router }        = require('express');
+const { Router }         = require('express');
+const { verificarToken } = require('../middlewares/verificacion-jwt');
+const { verificarRol }   = require('../middlewares/verificar-rol');
 const { 
     crearNuevoUsuario,
     inciarSesionUsuario,
     actualizarContraseniaUsuario
  } = require('../controllers/usuario.controller')
-
- const { verificarToken } = require('../middlewares/verificacion-jwt');
- 
 const router            = Router();
 
 //crear nuevo usuario
-router.post('/users', crearNuevoUsuario);
+router.post('/users', verificarToken, verificarRol ,crearNuevoUsuario);
 //iniciar sesion de usuario
 router.post('/users/login', inciarSesionUsuario);
 //actualizar contraseña de usuario
-router.put('/users/:id_usuario', actualizarContraseniaUsuario);
+router.put('/users/:id_usuario', verificarToken ,actualizarContraseniaUsuario);
 
 
 module.exports = router;

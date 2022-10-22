@@ -1,5 +1,6 @@
 const { Router }         = require('express');
 const { verificarToken } = require('../middlewares/verificacion-jwt');
+const { verificarRol }   = require('../middlewares/verificar-rol');
 const { 
     crearNuevaPersona,
     obtenerPersonaPorNroDocumento
@@ -8,8 +9,8 @@ const {
 const router             = Router();
 
 //Crear nueva persona
-router.post('/person', crearNuevaPersona);
+router.post('/person', verificarToken,crearNuevaPersona);
 //Obtener persona por nro de documento
-router.get('/person/:nro', obtenerPersonaPorNroDocumento);
+router.get('/person/:nro', verificarToken,obtenerPersonaPorNroDocumento);
 
 module.exports = router;

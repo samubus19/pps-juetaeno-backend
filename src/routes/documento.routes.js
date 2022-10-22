@@ -1,5 +1,5 @@
-const { Router }               = require('express');
-const { verificarToken }       = require('../middlewares/verificacion-jwt');
+const { Router }         = require('express');
+const { verificarToken } = require('../middlewares/verificacion-jwt');
 const { 
     crearNuevoDocumento,
     actualizarEstadoDocumento,
@@ -10,14 +10,14 @@ const {
 const router                   = Router();
 
 //Obtener listado de expedientes
-router.get('/files', obtenerDocumentos);
+router.get('/files', verificarToken , obtenerDocumentos);
 //Crear nuevo registro de expediente
-router.post('/files', crearNuevoDocumento);
+router.post('/files', verificarToken ,crearNuevoDocumento);
 //Actualizar estado de expediente
-router.put('/files/state/:nro', actualizarEstadoDocumento);
+router.put('/files/state/:nro', verificarToken ,actualizarEstadoDocumento);
 //Editar documento
-router.put('/files/:nro', editarDocumento);
+router.put('/files/:nro', verificarToken ,editarDocumento);
 //Obtener expediente por numero
-router.get('/files/:nro', obtenerDocumentoPorNumero);
+router.get('/files/:nro', verificarToken ,obtenerDocumentoPorNumero);
 
 module.exports = router;
