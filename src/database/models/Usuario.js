@@ -7,7 +7,7 @@ const UsuarioSchema = new Schema({
     contrasenia    : String,
     area           : String,
     rol            : String,
-    idPersona     : String
+    fkPersona     : String
     }, {
     timestamps     : false
 });

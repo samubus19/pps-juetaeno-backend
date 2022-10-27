@@ -1,10 +1,10 @@
 verificarRol = (req, res, next) => {
     try {
-        
         const { rol } = req.body;
-        if(rol == 'usuario') {
+        if(rol.toLowerCase() == 'usuario') {
             return res.status(403).json({ mensaje : "Acceso denegado" });
-        } else if(rol == 'admin'){
+        } else if(rol.toLowerCase() == 'admin'){
+            console.log("Rol verificado correctamente")
             // res.status(200).json({ mensaje : "Rol verificado correctamente" });
             next();
         }

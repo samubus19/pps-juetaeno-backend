@@ -6,7 +6,7 @@ const usuarioSchema = Joi.object({
     contrasenia : Joi.string().min(6).required(),
     area        : Joi.string().valid('MesaEntrada', 'Legales', 'JuntaPrimario', 'JuntaSecundario', "Secretaria").insensitive().required(),
     rol         : Joi.string().valid('usuario', 'admin').insensitive().required(),
-    idPersona   : Joi.string().required()
+    fkPersona   : Joi.string().required()
 })
 
 module.exports = { usuarioSchema };

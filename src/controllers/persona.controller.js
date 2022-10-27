@@ -24,8 +24,9 @@ async function crearNuevaPersona(req, res) {
             nroTelefono     : bodyData.nroTelefono
         });
     
-        const nroDocumento = await Persona.findOne({nro_documento : bodyData.nroDocumento});
-        if (nroDocumento) {
+        const persona = await Persona.findOne({nroDocumento : bodyData.nroDocumento});
+        console.log(persona)
+        if (persona) {
             return res.status(400).json({
                 statusCode : 400,
                 mensaje    : `Ya existe una persona con el número de documento ${bodyData.nroDocumento}.`
@@ -38,6 +39,7 @@ async function crearNuevaPersona(req, res) {
         }
     } catch (error) {
         res.status(500).json(error);
+        console.log(error);
     }
     
 }

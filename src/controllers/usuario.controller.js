@@ -13,7 +13,7 @@ async function crearNuevoUsuario(req, res) {
         email       : req.body.email,
         area        : req.body.area,
         rol         : req.body.rol,
-        idPersona   : req.body.idPersona
+        fkPersona   : req.body.fkPersona
     }
     try {
         Joi.assert(bodyData, usuarioSchema);
@@ -24,7 +24,7 @@ async function crearNuevoUsuario(req, res) {
             email       : bodyData.email,
             rol         : bodyData.rol,
             area        : bodyData.area,
-            idPersona   : bodyData.idPersona
+            fkPersona   : bodyData.fkPersona
         });
     
         const nombreUsuario = await Usuario.findOne({ $or : [{usuario : bodyData.usuario}, { email : bodyData.email}] });
@@ -42,6 +42,7 @@ async function crearNuevoUsuario(req, res) {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(500).json(error.message);
     }
     
