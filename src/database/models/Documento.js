@@ -18,3 +18,5 @@ const DocumentoSchema = new Schema({
 });
 
 module.exports = model("Documento", DocumentoSchema);
+
+//agregar comprobacion de documentos inactivos

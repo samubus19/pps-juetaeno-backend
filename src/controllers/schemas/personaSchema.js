@@ -6,7 +6,7 @@ const personaSchema = Joi.object({
     apellido        : Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
     tipoDocumento   : Joi.string().required(),
     nroDocumento    : Joi.string().length(8).required(),
-    fechaNacimiento : Joi.date().format('DD/MM/YYYY').required(),
+    fechaNacimiento : Joi.date().format('D/MM/YYYY').required(),
     nroTelefono     : Joi.string().required()
 })
 

@@ -4,7 +4,8 @@ const { verificarRol }   = require('../middlewares/verificar-rol');
 const { 
     crearNuevoUsuario,
     inciarSesionUsuario,
-    actualizarContraseniaUsuario
+    actualizarContraseniaUsuario,
+    obtenerUsuarios
  } = require('../controllers/usuario.controller')
 const router            = Router();
 
@@ -14,6 +15,8 @@ router.post('/users', verificarToken, verificarRol ,crearNuevoUsuario);
 router.post('/users/login', inciarSesionUsuario);
 //actualizar contraseña de usuario
 router.put('/users/:id_usuario', verificarToken ,actualizarContraseniaUsuario);
+//obtener todos los usuarios
+router.get('/users', obtenerUsuarios);
 
 
 module.exports = router;

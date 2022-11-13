@@ -1,4 +1,5 @@
 const Usuario           = require('../database/models/Usuario');
+const Persona           = require('../database/models/Persona');
 const jwt               = require('jsonwebtoken');
 const config            = require('config');
 const { secret_key }    = config.get('services.token');
@@ -105,9 +106,33 @@ async function actualizarContraseniaUsuario(req, res) {
     }
 }
 
+async function obtenerUsuarios(req, res) {
+    // try {
+    //     const usuarios  = await Usuario.find().populate("fkPersona");
+    //     console.log(usuarios);
+
+    //     // usuarios.forEach(async (usuario) => {
+    //     //     let nuevaPersona = await Persona.findOne({fkPersona : usuario.fkPersona})
+    //     //     console.log(nuevaPersona)
+    //     //     personasUsuario.push(nuevaPersona)
+    //     // });
+
+    //     return res.status(200).json({
+    //         mensaje : usuarios
+    //     });
+    // } catch(error) {
+    //     console.log(error)
+    //     return res.status(500).json({ 
+    //         mensaje : error 
+    //     });
+    // }
+}
+
+
 module.exports = {
     crearNuevoUsuario,
     inciarSesionUsuario,
-    actualizarContraseniaUsuario
+    actualizarContraseniaUsuario,
+    obtenerUsuarios
 }
 

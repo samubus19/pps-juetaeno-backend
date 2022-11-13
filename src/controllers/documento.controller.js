@@ -5,11 +5,13 @@ const { DocumentoSchema,
         actualizarEstadoDocumentoSchema }        = require('./schemas/documentoSchema');
 
 async function crearNuevoDocumento(req, res) {
+    console.log(new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}))
     const bodyData = {
         nroDocumento      : req.body.nroDocumento,
         tipoDocumento     : req.body.tipoDocumento,
         descripcion       : req.body.descripcion,
         fechaIngreso      : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
+        // fechaIngreso      : "17/11/2022",
         fechaSalida       : "",
         estado            : "Iniciado",
         sede              : "MesaEntrada",
@@ -61,6 +63,7 @@ async function editarDocumento(req, res) {
         tipoDocumento : req.body.tipoDocumento,
         descripcion   : req.body.descripcion,
         destino       : req.body.destino,
+        //Agregar usuario que editó
     }
         
     try {

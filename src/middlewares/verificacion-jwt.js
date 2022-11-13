@@ -15,7 +15,8 @@ const verificarToken = (req, res, next) => {
             if(error) {
                 
                 res.status(403).json({
-                    mensaje :"No se ha provisto un token"
+                    statusCode : 403,
+                    mensaje    :"No se ha provisto un token o su token ha expirado"
                 });
 
             }else{
