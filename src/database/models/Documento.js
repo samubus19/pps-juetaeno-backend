@@ -10,8 +10,10 @@ const DocumentoSchema = new Schema({
         fechaSalida       : String,
         estado            : String,
         sede              : String,
-        destino           : String,
-        idUsuarioFirmante : String
+        idUsuarioFirmante : {
+            type : Schema.Types.ObjectId,
+            ref  : "Usuario"
+        }
     }]
     }, {
     timestamps     : false

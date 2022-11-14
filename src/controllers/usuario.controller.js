@@ -14,7 +14,7 @@ async function crearNuevoUsuario(req, res) {
         email       : req.body.email,
         area        : req.body.area,
         rol         : req.body.rol,
-        fkPersona   : req.body.fkPersona
+        idPersona   : req.body.idPersona
     }
     try {
         Joi.assert(bodyData, usuarioSchema);
@@ -25,7 +25,7 @@ async function crearNuevoUsuario(req, res) {
             email       : bodyData.email,
             rol         : bodyData.rol,
             area        : bodyData.area,
-            fkPersona   : bodyData.fkPersona
+            idPersona   : bodyData.idPersona
         });
     
         const nombreUsuario = await Usuario.findOne({ $or : [{usuario : bodyData.usuario}, { email : bodyData.email}] });
@@ -107,25 +107,18 @@ async function actualizarContraseniaUsuario(req, res) {
 }
 
 async function obtenerUsuarios(req, res) {
-    // try {
-    //     const usuarios  = await Usuario.find().populate("fkPersona");
-    //     console.log(usuarios);
+    try {
+        const usuarios  = await Usuario.find().populate("idPersona");
 
-    //     // usuarios.forEach(async (usuario) => {
-    //     //     let nuevaPersona = await Persona.findOne({fkPersona : usuario.fkPersona})
-    //     //     console.log(nuevaPersona)
-    //     //     personasUsuario.push(nuevaPersona)
-    //     // });
-
-    //     return res.status(200).json({
-    //         mensaje : usuarios
-    //     });
-    // } catch(error) {
-    //     console.log(error)
-    //     return res.status(500).json({ 
-    //         mensaje : error 
-    //     });
-    // }
+        return res.status(200).json({
+            mensaje : usuarios
+        });
+    } catch(error) {
+        console.log(error)
+        return res.status(500).json({ 
+            mensaje : error 
+        });
+    }
 }
 
 

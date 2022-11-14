@@ -7,10 +7,10 @@ const UsuarioSchema = new Schema({
     contrasenia    : String,
     area           : String,
     rol            : String,
-    fkPersona        : [{
-        type : Schema.Types.String,
+    idPersona      : {
+        type : Schema.Types.ObjectId,
         ref  : "Persona"
-    }],
+    },
     }, {
     timestamps     : false
 });

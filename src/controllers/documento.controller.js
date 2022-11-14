@@ -1,8 +1,9 @@
-const Documento                                  = require('../database/models/Documento');
-const Joi                                        = require('joi');
+const Documento                           = require('../database/models/Documento');
+const Joi                                 = require('joi');
 const { DocumentoSchema, 
         editarDocumentoSchema, 
-        actualizarEstadoDocumentoSchema }        = require('./schemas/documentoSchema');
+        actualizarEstadoDocumentoSchema } = require('./schemas/documentoSchema');
+const { formatearArea }                   = require("../helpers/Area-formatter");
 
 async function crearNuevoDocumento(req, res) {
     console.log(new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}))
@@ -15,7 +16,6 @@ async function crearNuevoDocumento(req, res) {
         fechaSalida       : "",
         estado            : "Iniciado",
         sede              : "MesaEntrada",
-        destino           : req.body.destino,
         idUsuarioFirmante : req.body.idUsuarioFirmante
     }
     
@@ -40,7 +40,6 @@ async function crearNuevoDocumento(req, res) {
                 fechaSalida       : bodyData.fechaSalida,
                 estado            : bodyData.estado,
                 sede              : bodyData.sede,
-                destino           : bodyData.destino,
                 idUsuarioFirmante : bodyData.idUsuarioFirmante
             }]
         });
@@ -50,6 +49,7 @@ async function crearNuevoDocumento(req, res) {
             mensaje : "Documento creado correctamente"
         });   
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             mensaje : error
         })
@@ -62,7 +62,6 @@ async function editarDocumento(req, res) {
         nroDocumento  : req.body.nroDocumento,
         tipoDocumento : req.body.tipoDocumento,
         descripcion   : req.body.descripcion,
-        destino       : req.body.destino,
         //Agregar usuario que editó
     }
         
@@ -71,10 +70,9 @@ async function editarDocumento(req, res) {
         const documento = await Documento.findOne({nroDocumento : nroDocumento});
 
         if(documento) {
-            documento.nroDocumento         = bodyData.nroDocumento;
-            documento.tipoDocumento        = bodyData.tipoDocumento;
-            documento.descripcion          = bodyData.descripcion;
-            documento.historial[0].destino = bodyData.destino;
+            documento.nroDocumento      = bodyData.nroDocumento;
+            documento.tipoDocumento     = bodyData.tipoDocumento;
+            documento.descripcion       = bodyData.descripcion;
         }
         await documento.save();
         return res.status(200).json({
@@ -92,7 +90,7 @@ async function actualizarEstadoDocumento(req, res) {
     const nroDocumento  = req.params.nro;
     const bodyData = {
         nuevoEstado  : req.body.nuevoEstado,
-        destino      : req.body.destino,
+        sede         : req.body.destino,
         fechaIngreso : new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'}),
         fechaSalida  : ""
     }
@@ -104,14 +102,13 @@ async function actualizarEstadoDocumento(req, res) {
                     fechaIngreso  : bodyData.fechaIngreso,
                     fechaSalida   : bodyData.fechaSalida,
                     estado        : bodyData.nuevoEstado,
-                    destino       : bodyData.destino
+                    sede          : bodyData.destino
                 })
             
             documento.historial[documento.historial.length-2].fechaSalida = documento.historial[documento.historial.length-1].fechaIngreso
-            documento.historial[documento.historial.length-1].sede        = documento.historial[documento.historial.length-2].destino
+            // documento.historial[documento.historial.length-1].sede        = documento.historial[documento.historial.length-2].destino
             if(documento.historial[documento.historial.length-1].estado === "Finalizado") {
                 documento.historial[documento.historial.length-1].sede        = ""
-                documento.historial[documento.historial.length-1].destino     = ""
                 documento.historial[documento.historial.length-1].fechaSalida = new Date().toLocaleDateString('es-ES',{timeZone : 'GMT'})
             }
             }
@@ -137,11 +134,15 @@ async function actualizarEstadoDocumento(req, res) {
 async function obtenerDocumentos(req, res) {
 
     try {
-        const documentos = await Documento.find();
+        const documentos = await Documento.find().populate({
+            path     : "historial.idUsuarioFirmante", 
+            populate : { path : "idPersona" }}
+            );
         return res.status(200).json({
             mensaje : documentos
         });
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             mensaje : error});
        }
