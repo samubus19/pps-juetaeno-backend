@@ -10,4 +10,11 @@ const personaSchema = Joi.object({
     nroTelefono     : Joi.string().required()
 })
 
-module.exports = { personaSchema };
+const editarPersonaSchema = Joi.object({
+    nombre          : Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
+    apellido        : Joi.string().regex(/^[a-zA-Z\s]+$/).required(),
+    fechaNacimiento : Joi.date().format('D/MM/YYYY').required(),
+    nroTelefono     : Joi.string().required()
+})
+
+module.exports = { personaSchema, editarPersonaSchema };

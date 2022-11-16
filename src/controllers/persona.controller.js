@@ -1,6 +1,7 @@
-const Persona           = require('../database/models/Persona')
-const Joi               = require('joi');
-const { personaSchema } = require('./schemas/personaSchema');
+const Persona                 = require('../database/models/Persona')
+const Joi                     = require('joi');
+const { personaSchema, 
+        editarPersonaSchema } = require('./schemas/personaSchema');
 
 
 async function crearNuevaPersona(req, res) {
@@ -61,8 +62,47 @@ async function obtenerPersonaPorNroDocumento(req, res) {
    }
 }
 
+async function editarPersona(req, res) {
+    const idPersona = req.params.idPersona;
+    const bodyData = {
+        nombre          : req.body.nombre,
+        apellido        : req.body.apellido,
+        fechaNacimiento : req.body.fechaNacimiento,
+        nroTelefono     : req.body.nroTelefono,
+    }
+        
+    try {
+        Joi.assert(bodyData, editarPersonaSchema);
+        const persona = await Persona.findById(idPersona);
+        console.log(persona)
+        if(!persona) {
+            return res.status(400).json({
+                statusCode : 400,
+                mensaje    : "Petición errónea, revisa tus parámetros."
+            })
+        }
+
+        persona.nombre          = bodyData.nombre
+        persona.apellido        = bodyData.apellido
+        persona.fechaNacimiento = bodyData.fechaNacimiento
+        persona.nroTelefono     = bodyData.nroTelefono
+
+        await persona.save();
+        return res.status(200).json({
+            mensaje : "Persona editada correctamente"
+        });
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ 
+            mensaje : error
+        });
+    } 
+}
+
 module.exports = {
     crearNuevaPersona,
-    obtenerPersonaPorNroDocumento
+    obtenerPersonaPorNroDocumento,
+    editarPersona
 }
 

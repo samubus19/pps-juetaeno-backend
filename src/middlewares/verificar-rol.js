@@ -1,6 +1,14 @@
 verificarRol = (req, res, next) => {
     try {
         const { rol } = req.body;
+
+        if(!rol) {
+            return res.status(400).json({
+                rquestStatus : 400,
+                mensaje      : "Petición errónea. Por favor revisa tus parámetros" 
+            })
+        }
+
         if(rol.toLowerCase() == 'usuario') {
             return res.status(403).json({ mensaje : "Acceso denegado" });
         } else if(rol.toLowerCase() == 'admin'){

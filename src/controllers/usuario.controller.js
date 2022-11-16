@@ -4,7 +4,7 @@ const jwt               = require('jsonwebtoken');
 const config            = require('config');
 const { secret_key }    = config.get('services.token');
 const Joi               = require('joi');
-const { usuarioSchema } = require('./schemas/usuarioSchema');
+const { usuarioSchema, editarUsuarioSchema } = require('./schemas/usuarioSchema');
 
 
 async function crearNuevoUsuario(req, res) {
@@ -88,15 +88,17 @@ async function inciarSesionUsuario(req, res) {
 
 async function actualizarContraseniaUsuario(req, res) {
     try {
-        const usuario = await Usuario.findByIdAndUpdate(req.params.id_usuario, {
-            contrasenia : req.body.contrasenia
-        });
+        Joi.assert(req.body.contrasenia, Joi.string().min().required())
+        const usuario       = await Usuario.findById(req.params.idUsuario)
+        
         if(!usuario) {
             return res.status(400).json({
                 statusCode : 400,
                 mensaje    : "Petición errónea, revisa tus parámetros."
             })
         }
+        usuario.contrasenia = await usuario.encryptPassword(req.body.contrasenia) 
+        await usuario.save();
         return res.status(200).json("Contraseña actualizada correctamente");
 
     } catch(error) {
@@ -121,11 +123,51 @@ async function obtenerUsuarios(req, res) {
     }
 }
 
+async function editarUsuario(req, res) {
+    
+    const idUsuario = req.params.idUsuario;
+    const bodyData = {
+        usuario     : req.body.usuario,
+        email       : req.body.email,
+        area        : req.body.area,
+        rol         : req.body.rol,
+        contrasenia : req.body.contrasenia,
+    }
+        
+    try {
+        Joi.assert(bodyData, editarUsuarioSchema);
+        const usuario = await Usuario.findById(req.params.idUsuario);
+
+        if(!usuario) {
+            return res.status(400).json({
+                statusCode : 400,
+                mensaje    : "Petición errónea, revisa tus parámetros."
+            })
+        }
+
+        usuario.usuario     = bodyData.usuario
+        usuario.email       = bodyData.email
+        usuario.area        = bodyData.area
+        usuario.rol         = bodyData.rol
+        usuario.contrasenia = await usuario.encryptPassword(bodyData.contrasenia)
+    
+        await usuario.save();
+        return res.status(200).json({
+            mensaje : "Usuario editado correctamente"
+        });
+
+    } catch (error) {
+        return res.status(500).json({ 
+            mensaje : error
+        });
+    } 
+}
 
 module.exports = {
     crearNuevoUsuario,
     inciarSesionUsuario,
     actualizarContraseniaUsuario,
-    obtenerUsuarios
+    obtenerUsuarios,
+    editarUsuario
 }
 
