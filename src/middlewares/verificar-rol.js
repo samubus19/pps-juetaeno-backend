@@ -1,6 +1,8 @@
 verificarRol = (req, res, next) => {
     try {
-        const { rol } = req.body;
+        const rol = req.body.rol;
+
+        console.log(req.body)
 
         if(!rol) {
             return res.status(400).json({

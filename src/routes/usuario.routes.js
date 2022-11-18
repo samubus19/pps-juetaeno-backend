@@ -6,7 +6,8 @@ const {
     inciarSesionUsuario,
     actualizarContraseniaUsuario,
     obtenerUsuarios,
-    editarUsuario
+    editarUsuario,
+    obtenerUsuarioPorId
  } = require('../controllers/usuario.controller');
 const router            = Router();
 
@@ -17,9 +18,10 @@ router.post('/users/login', inciarSesionUsuario);
 //actualizar contraseña de usuario
 router.put('/users/passwd/:idUsuario', verificarToken ,actualizarContraseniaUsuario);
 //obtener todos los usuarios
-router.get('/users', obtenerUsuarios);
+router.get('/users/all', verificarToken, obtenerUsuarios);
 //Editar usuario
 router.put('/users/:idUsuario', verificarToken, verificarRol ,editarUsuario);
-
+//obtener usuario por id
+router.get('/users/:idUsuario', verificarToken, obtenerUsuarioPorId);
 
 module.exports = router;
