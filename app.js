@@ -20,6 +20,7 @@ app.use(express.json());
 app.use(require('./src/routes/usuario.routes'));
 app.use(require('./src/routes/documento.routes'));
 app.use(require('./src/routes/persona.routes'));
+app.use(require('./src/routes/jwt-token.routes'));
 
 //Static files
 app.use(express.static(path.join(__dirname, 'public')));

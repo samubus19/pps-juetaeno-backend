@@ -12,9 +12,9 @@ const usuarioSchema = Joi.object({
 const editarUsuarioSchema = Joi.object({
     usuario     : Joi.string().min(3).required(),
     email       : Joi.string().email().required(),
-    contrasenia : Joi.string().min(6).required(),
     area        : Joi.string().valid('MesaEntrada', 'Legales', 'JuntaPrimario', 'JuntaSecundario', "Secretaria").insensitive().required(),
     rol         : Joi.string().valid('usuario', 'admin').insensitive().required(),
+    rolEditado  : Joi.string().valid('usuario', 'admin').insensitive().required(),
 })
 
 module.exports = { usuarioSchema, editarUsuarioSchema };

@@ -130,8 +130,8 @@ async function editarUsuario(req, res) {
         usuario     : req.body.usuario,
         email       : req.body.email,
         area        : req.body.area,
+        rolEditado  : req.body.rolEditado,
         rol         : req.body.rol,
-        contrasenia : req.body.contrasenia,
     }
         
     try {
@@ -148,8 +148,7 @@ async function editarUsuario(req, res) {
         usuario.usuario     = bodyData.usuario
         usuario.email       = bodyData.email
         usuario.area        = bodyData.area
-        usuario.rol         = bodyData.rol
-        usuario.contrasenia = await usuario.encryptPassword(bodyData.contrasenia)
+        usuario.rol         = bodyData.rolEditado
     
         await usuario.save();
         return res.status(200).json({
@@ -157,10 +156,28 @@ async function editarUsuario(req, res) {
         });
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ 
             mensaje : error
         });
     } 
+}
+
+async function obtenerUsuarioPorId(req, res) {
+    const idUsuario = req.params.idUsuario
+    try {
+        Joi.assert(idUsuario, Joi.string().required())
+        const usuario  = await Usuario.findById(idUsuario).populate("idPersona");
+
+        return res.status(200).json({
+            mensaje : usuario
+        });
+    } catch(error) {
+        console.log(error)
+        return res.status(500).json({ 
+            mensaje : error 
+        });
+    }
 }
 
 module.exports = {
@@ -168,6 +185,7 @@ module.exports = {
     inciarSesionUsuario,
     actualizarContraseniaUsuario,
     obtenerUsuarios,
-    editarUsuario
+    editarUsuario,
+    obtenerUsuarioPorId
 }
 
