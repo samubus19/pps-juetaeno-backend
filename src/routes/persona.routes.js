@@ -4,7 +4,8 @@ const { verificarRol }   = require('../middlewares/verificar-rol');
 const { 
     crearNuevaPersona,
     obtenerPersonaPorNroDocumento,
-    editarPersona
+    editarPersona,
+    eliminarPersona
 } = require('../controllers/persona.controller');
  
 const router             = Router();
@@ -15,4 +16,6 @@ router.post('/person', verificarToken, verificarRol,crearNuevaPersona);
 router.get('/person/:nro', verificarToken,obtenerPersonaPorNroDocumento);
 //Editar persona
 router.put('/person/:idPersona', verificarToken,verificarRol, editarPersona);
+//Elimnar persona
+router.delete('/person/:idPersona', verificarToken, verificarRol, eliminarPersona);
 module.exports = router;

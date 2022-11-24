@@ -100,9 +100,35 @@ async function editarPersona(req, res) {
     } 
 }
 
+
+async function eliminarPersona(req, res) {
+    const idPersona = req.params.idPersona;
+    try {
+        const persona = await Persona.findById(idPersona);
+        if(!persona) {
+            return res.status(400).json({
+                statusCode : 400,
+                mensaje    : "Petición errónea, revisa tus parámetros."
+            })
+        }
+
+        await persona.deleteOne({_id : idPersona});
+        return res.status(200).json({
+            mensaje : "Persona eliminada correctamente"
+        });
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ 
+            mensaje : error
+        });
+    } 
+}
+
 module.exports = {
     crearNuevaPersona,
     obtenerPersonaPorNroDocumento,
-    editarPersona
+    editarPersona,
+    eliminarPersona
 }
 
