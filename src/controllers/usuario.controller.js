@@ -79,7 +79,7 @@ async function inciarSesionUsuario(req, res) {
         });    
             
     } catch (error) {
-        return res.stats(500).json({
+        return res.status(500).json({
             mensaje : error
         })
     }
