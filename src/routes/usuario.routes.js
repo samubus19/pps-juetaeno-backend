@@ -12,16 +12,16 @@ const {
 const router            = Router();
 
 //crear nuevo usuario
-router.post('/users', verificarToken, verificarRol ,crearNuevoUsuario);
+router.post('/users',                  verificarToken, verificarRol , crearNuevoUsuario);
 //iniciar sesion de usuario
-router.post('/users/login', inciarSesionUsuario);
+router.post('/users/login',            inciarSesionUsuario);
 //actualizar contraseña de usuario
 router.put('/users/passwd/:idUsuario', verificarToken ,actualizarContraseniaUsuario);
 //obtener todos los usuarios
-router.get('/users/all', verificarToken, obtenerUsuarios);
+router.get('/users/all',               verificarToken, obtenerUsuarios);
 //Editar usuario
-router.put('/users/:idUsuario', verificarToken, verificarRol ,editarUsuario);
+router.put('/users/:idUsuario',        verificarToken, verificarRol , editarUsuario);
 //obtener usuario por id
-router.get('/users/:idUsuario', verificarToken, obtenerUsuarioPorId);
+router.get('/users/:idUsuario',        verificarToken, obtenerUsuarioPorId);
 
 module.exports = router;

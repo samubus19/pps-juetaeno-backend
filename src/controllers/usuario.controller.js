@@ -69,7 +69,7 @@ async function inciarSesionUsuario(req, res) {
         const token = jwt.sign({ 
             id: usuario._id }, 
             secret_key, {
-            expiresIn: '24h',
+            expiresIn: '8h',
         });
 
         res.status(200).json({
@@ -79,6 +79,7 @@ async function inciarSesionUsuario(req, res) {
         });    
             
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             mensaje : error
         })

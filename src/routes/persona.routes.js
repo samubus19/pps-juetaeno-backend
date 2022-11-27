@@ -11,11 +11,12 @@ const {
 const router             = Router();
 
 //Crear nueva persona
-router.post('/person', verificarToken, verificarRol,crearNuevaPersona);
+router.post('/person',              verificarToken, verificarRol, crearNuevaPersona);
 //Obtener persona por nro de documento
-router.get('/person/:nro', verificarToken,obtenerPersonaPorNroDocumento);
+router.get('/person/:nro',          verificarToken, obtenerPersonaPorNroDocumento);
 //Editar persona
-router.put('/person/:idPersona', verificarToken,verificarRol, editarPersona);
+router.put('/person/:idPersona',    verificarToken, verificarRol, editarPersona);
 //Elimnar persona
 router.delete('/person/:idPersona', verificarToken, verificarRol, eliminarPersona);
+
 module.exports = router;

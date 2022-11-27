@@ -9,7 +9,7 @@ const path           = require('path');
 /**
  * Configuracion de CORS
  */
- app.use(cors());
+ app.use(cors({origin : true, credentials : true}));
 
 //Middlewares
 app.use(morgan('dev'));

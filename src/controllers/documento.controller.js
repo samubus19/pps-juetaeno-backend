@@ -5,7 +5,6 @@ const {
   editarDocumentoSchema,
   actualizarEstadoDocumentoSchema,
 } = require("./schemas/documentoSchema");
-const { formatearArea } = require("../helpers/Area-formatter");
 
 async function crearNuevoDocumento(req, res) {
   console.log(new Date().toLocaleDateString("es-ES", { timeZone: "GMT" }));
