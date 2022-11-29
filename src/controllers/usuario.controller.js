@@ -4,9 +4,9 @@ const jwt               = require('jsonwebtoken');
 const config            = require('config');
 const { secret_key }    = config.get('services.token');
 const Joi               = require('joi');
-var AES                 = require("crypto-js/aes");
+let CryptoJS            = require("crypto-js");
 const { usuarioSchema, editarUsuarioSchema } = require('./schemas/usuarioSchema');
-
+const { stringify } = require("flatted");
 
 async function crearNuevoUsuario(req, res) {
     const bodyData = {
@@ -68,19 +68,20 @@ async function inciarSesionUsuario(req, res) {
         }
 
         const token = jwt.sign({ 
-            id: usuario._id }, 
-            secret_key, {
-            expiresIn: '8h',
-        });
-
-        // const encriptadp = AES.encrypt(JSON.stringify(usuario), "juetaeno")
-        // const desencr    = AES.decrypt(encriptadp, "juetaeno")
+            id : usuario._id }, 
+            secret_key, 
+            {
+                expiresIn: '8h',
+            });
+        
+            let usuarioEncriptadoJson = CryptoJS.AES.encrypt(JSON.stringify(usuario), token).toString()
+            let usuarioEncriptadoData = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(usuarioEncriptadoJson))
 
         res.status(200).json({
-            mensaje : "Usuario autenticado correctamente",
-            token   : token, 
-            usuario : usuario,
-        });    
+            mensaje  : "Usuario autenticado correctamente",
+            token    : token ,
+            usuario  : usuarioEncriptadoData
+    });    
             
     } catch (error) {
         console.log(error)
