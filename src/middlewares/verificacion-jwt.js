@@ -22,8 +22,6 @@ const verificarToken = (req, res, next) => {
                     });
 
                 }else{
-                    console.log(authData);
-                    console.log("Token verificado correctamente");
                     next();
                 }
         });

@@ -30,7 +30,7 @@ async function crearNuevoDocumento(req, res) {
     if (documento) {
       return res.status(400).json({
         statusCode: 400,
-        mensaje: `Ya existe un documento con el número ${bodyData.nroDocumento}`,
+        mensaje: `Ya existe un documento con el número ${bodyData.nroDocumento} de tipo ${bodyData.tipoDocumento}`,
       });
     }
 
@@ -74,19 +74,28 @@ async function editarDocumento(req, res) {
   try {
     Joi.assert(bodyData, editarDocumentoSchema);
     const documento = await Documento.findOne({ _id: _id });
+    //devuelve documento
+    //preguntar si el nro y tipo que mandamos == a otro existente
 
     if (documento) {
-      const documentoPorTipo  = await Documento.findOne({nroDocumento : bodyData.nroDocumento, tipoDocumento : bodyData.tipoDocumento})
+      const documentoPorTipo2  = await Documento.findOne({nroDocumento : bodyData.nroDocumento,  tipoDocumento : bodyData.tipoDocumento})
       
-      if(documentoPorTipo) {
-        return res.status(400).json({
-          mensaje : "Error en la petición. Ya existe un documento con ese número y tipo"
-        })
-      }
+      if(documentoPorTipo2) {
+        if(documento.id === documentoPorTipo2.id) {
+          documento.nroDocumento  = bodyData.nroDocumento;
+          documento.tipoDocumento = bodyData.tipoDocumento;
+          documento.descripcion   = bodyData.descripcion;
 
-      documento.nroDocumento  = bodyData.nroDocumento;
-      documento.tipoDocumento = bodyData.tipoDocumento;
-      documento.descripcion   = bodyData.descripcion;
+        } else {
+            return res.status(400).json({
+              mensaje : "Error en la petición. Ya existe un documento con ese número y tipo"
+            })
+          }
+        } else {
+          documento.nroDocumento  = bodyData.nroDocumento;
+          documento.tipoDocumento = bodyData.tipoDocumento;
+          documento.descripcion   = bodyData.descripcion;
+        }
     }
 
     await documento.save();

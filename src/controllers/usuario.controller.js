@@ -4,6 +4,7 @@ const jwt               = require('jsonwebtoken');
 const config            = require('config');
 const { secret_key }    = config.get('services.token');
 const Joi               = require('joi');
+var AES                 = require("crypto-js/aes");
 const { usuarioSchema, editarUsuarioSchema } = require('./schemas/usuarioSchema');
 
 
@@ -72,10 +73,13 @@ async function inciarSesionUsuario(req, res) {
             expiresIn: '8h',
         });
 
+        // const encriptadp = AES.encrypt(JSON.stringify(usuario), "juetaeno")
+        // const desencr    = AES.decrypt(encriptadp, "juetaeno")
+
         res.status(200).json({
             mensaje : "Usuario autenticado correctamente",
             token   : token, 
-            usuario : usuario
+            usuario : usuario,
         });    
             
     } catch (error) {
