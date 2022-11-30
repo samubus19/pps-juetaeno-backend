@@ -61,7 +61,7 @@ async function inciarSesionUsuario(req, res) {
         }
         const contraseniaValida = await usuario.matchPassword(req.body.contrasenia);
         if (!contraseniaValida) {
-            return res.status(401).send({ 
+            return res.status(400).send({ 
                 auth    : false, 
                 token   : null, 
                 mensaje : "El usuario y/o la contraseña ingresada son incorrectas" });
@@ -94,7 +94,7 @@ async function inciarSesionUsuario(req, res) {
 
 async function actualizarContraseniaUsuario(req, res) {
     try {
-        Joi.assert(req.body.contrasenia, Joi.string().min().required())
+        Joi.assert(req.body.contrasenia, Joi.string().min(6).required())
         const usuario       = await Usuario.findById(req.params.idUsuario)
         
         if(!usuario) {
@@ -108,6 +108,7 @@ async function actualizarContraseniaUsuario(req, res) {
         return res.status(200).json("Contraseña actualizada correctamente");
 
     } catch(error) {
+        console.log(error)
         return res.status(500).json({ 
             mensaje : error 
         });
