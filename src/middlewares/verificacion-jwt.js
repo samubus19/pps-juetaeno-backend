@@ -57,8 +57,6 @@ const verificarTokenControlador = async (req, res, next) => {
                     });
 
                 }else{
-                    console.log(authData);
-                    console.log("Token validado correctamente");
                     return res.status(200).json({
                         valido        : true,
                         requestStatus : 200,

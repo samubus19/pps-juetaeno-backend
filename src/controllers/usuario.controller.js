@@ -44,8 +44,9 @@ async function crearNuevoUsuario(req, res) {
             });
         }
     } catch (error) {
-        console.log(error)
-        res.status(500).json(error.message);
+        res.status(500).json({
+            mensaje : error
+        });
     }
     
 }
@@ -84,7 +85,6 @@ async function inciarSesionUsuario(req, res) {
     });    
             
     } catch (error) {
-        console.log(error)
         return res.status(500).json({
             mensaje : error
         })
@@ -108,7 +108,6 @@ async function actualizarContraseniaUsuario(req, res) {
         return res.status(200).json("Contraseña actualizada correctamente");
 
     } catch(error) {
-        console.log(error)
         return res.status(500).json({ 
             mensaje : error 
         });
@@ -123,7 +122,6 @@ async function obtenerUsuarios(req, res) {
             mensaje : usuarios
         });
     } catch(error) {
-        console.log(error)
         return res.status(500).json({ 
             mensaje : error 
         });
@@ -163,7 +161,6 @@ async function editarUsuario(req, res) {
         });
 
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ 
             mensaje : error
         });
@@ -180,7 +177,6 @@ async function obtenerUsuarioPorId(req, res) {
             mensaje : usuario
         });
     } catch(error) {
-        console.log(error)
         return res.status(500).json({ 
             mensaje : error 
         });

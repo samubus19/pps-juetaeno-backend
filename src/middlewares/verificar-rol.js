@@ -2,8 +2,6 @@ verificarRol = (req, res, next) => {
     try {
         const rol = req.body.rol;
 
-        console.log(req.body)
-
         if(!rol) {
             return res.status(400).json({
                 rquestStatus : 400,
@@ -20,7 +18,6 @@ verificarRol = (req, res, next) => {
         }
 
     } catch(error) {
-        console.log(error);
         return res.status(500).json({mensaje : error});
     }
 }

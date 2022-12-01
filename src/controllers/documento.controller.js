@@ -55,7 +55,6 @@ async function crearNuevoDocumento(req, res) {
     });
 
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       mensaje: error,
     });
@@ -104,7 +103,6 @@ async function editarDocumento(req, res) {
     });
 
   } catch (error) {
-    console.log(error)
     return res.status(500).json({
       mensaje: error,
     });
@@ -179,7 +177,6 @@ async function obtenerDocumentos(req, res) {
 
 async function obtenerDocumentoPorId(req, res) {
   try {
-    console.log(req.params.id)
     const documento = await Documento.findOne({  _id : req.params.id }).populate({
       path     : "historial.idUsuarioFirmante",
       populate : { path: "idPersona" },
@@ -197,7 +194,6 @@ async function obtenerDocumentoPorId(req, res) {
     });
 
   } catch (error) {
-    console.log(error.message)
     return res.status(500).json({
       mensaje : error,
     });

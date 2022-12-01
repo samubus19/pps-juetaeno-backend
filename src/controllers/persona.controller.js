@@ -26,7 +26,6 @@ async function crearNuevaPersona(req, res) {
         });
     
         const persona = await Persona.findOne({nroDocumento : bodyData.nroDocumento});
-        console.log(persona)
         if (persona) {
             return res.status(400).json({
                 statusCode : 400,
@@ -39,15 +38,15 @@ async function crearNuevaPersona(req, res) {
             });
         }
     } catch (error) {
-        res.status(500).json(error);
-        console.log(error);
+        res.status(500).json({
+            mensaje : error
+        });
     }
     
 }
 
 async function obtenerPersonaPorNroDocumento(req, res) {
    try {
-    console.log(req.params.nro)
         const persona = await Persona.findOne({nroDocumento : req.params.nro});
         if(!persona) {
             return res.status(400).json({
@@ -74,7 +73,6 @@ async function editarPersona(req, res) {
     try {
         Joi.assert(bodyData, editarPersonaSchema);
         const persona = await Persona.findById(idPersona);
-        console.log(persona)
         if(!persona) {
             return res.status(400).json({
                 statusCode : 400,
@@ -93,7 +91,6 @@ async function editarPersona(req, res) {
         });
 
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ 
             mensaje : error
         });
@@ -118,7 +115,6 @@ async function eliminarPersona(req, res) {
         });
 
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ 
             mensaje : error
         });
