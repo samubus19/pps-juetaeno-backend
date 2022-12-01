@@ -177,20 +177,27 @@ async function obtenerDocumentos(req, res) {
   }
 }
 
-async function obtenerDocumentoPorNumero(req, res) {
+async function obtenerDocumentoPorId(req, res) {
   try {
-    const documento = await Documento.findOne({ nroDocumento: req.params.nro });
+    console.log(req.params.id)
+    const documento = await Documento.findOne({  _id : req.params.id }).populate({
+      path     : "historial.idUsuarioFirmante",
+      populate : { path: "idPersona" },
+    });
+    
     if (!documento) {
       return res.status(400).json({
         statusCode : 400,
-        mensaje    : `No se ha encontrado un documento con el número ${req.params.nro}. Revisa tus parámetros.`,
+        mensaje    : `No se ha encontrado un documento. Revisa tus parámetros.`,
       });
     }
+
     return res.status(200).json({
       mensaje : documento,
     });
 
   } catch (error) {
+    console.log(error.message)
     return res.status(500).json({
       mensaje : error,
     });
@@ -201,6 +208,6 @@ module.exports = {
   crearNuevoDocumento,
   actualizarEstadoDocumento,
   obtenerDocumentos,
-  obtenerDocumentoPorNumero,
+  obtenerDocumentoPorId,
   editarDocumento,
 };

@@ -5,7 +5,7 @@ const {
   actualizarEstadoDocumento,
   editarDocumento,
   obtenerDocumentos,
-  obtenerDocumentoPorNumero,
+  obtenerDocumentoPorId,
 } = require("../controllers/documento.controller");
 
 const router = Router();
@@ -19,6 +19,6 @@ router.put("/files/state", verificarToken, actualizarEstadoDocumento);
 //Editar documento
 router.put("/files",       verificarToken, editarDocumento);
 //Obtener expediente por numero
-router.get("/files/:nro",  verificarToken, obtenerDocumentoPorNumero);
+router.get("/files/:id",  verificarToken, obtenerDocumentoPorId);
 
 module.exports = router;
